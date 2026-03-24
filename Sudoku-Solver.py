@@ -24,7 +24,6 @@ def displaySudoku(sk, l = 10, c = 10):
     print("-------------------------")
 
 def update_matrices():
-    #https://www.sudoku.academy/learn/the-rules-of-sudoku/
     for l in range(9):
         for r in range(9):
             if sudoku[l][r] != 0:
@@ -109,7 +108,7 @@ for i in range(9):
 
 #Strategies-------------------------------------------------------------------------------------------------------------
 def full_house():
-    #https://www.sudoku.academy/learn/full-house-strategy/
+    #https://www.sudopedia.org/wiki/Full_House
     action = False
     for l in sudoku:
         if count_nonzero(l == 0) == 1:
@@ -134,6 +133,24 @@ def full_house():
                 sudoku[s1+l][s2+r] = missing
     return action
 
+def naked_single():
+	#https://www.sudopedia.org/wiki/Naked_Single
+	action = False
+	sum1 = zeros((9,9))
+	for m in matrices:
+		sum1 += m
+	if 8 in sum1:
+		action = True
+		pos = argwhere(sum1 == 8)
+		for p in pos:
+			l,r = p
+			m = 0
+			while matrices[m][l, r] == 1:
+				m += 1
+			sudoku[l, r] = m+1
+	return action
+
+
 
 #Main loop--------------------------------------------------------------------------------------------------------------
 print("Initially filled to", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%\n\n")
@@ -146,7 +163,11 @@ while act:
         act = True
         print("Full house : ")
     else:
-        pass
+        if naked_single():
+            act = True
+            print("Naked single : ")
+        else:
+            pass
     if act:
         displaySudoku(sudoku)
         print("Filled to", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%")
