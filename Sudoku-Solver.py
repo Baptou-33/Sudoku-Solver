@@ -1,7 +1,7 @@
 from numpy import *
-grid = [[0] * 9] * 9
 
-def displayGrid(gd, l, c):
+#Useful functions-------------------------------------------------------------------------------------------------------
+def displaySudoku(sk, l, c):
     for i in range(9):
         if i%3 == 0:
             print("-------------------------")
@@ -12,21 +12,66 @@ def displayGrid(gd, l, c):
             if i == l and j == c:
                 lgn += "# "
             else:
-                tmp = gd[i][j]
+                tmp = sk[i][j]
                 if tmp == 0:
                     lgn += ". "
                 else:
-                    lgn += str(gd[i][j]) + " "
+                    lgn += str(sk[i][j]) + " "
         lgn += "|"
         print(lgn)
     print("-------------------------")
 
-def main():
+
+
+#Initialisation---------------------------------------------------------------------------------------------------------
+#Initialise sudoku
+sudoku = zeros((9, 9), dtype=int)
+
+#Input sudoku
+empty = ["", " ", "0", "."]
+numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+inp = input("1 : Manually enter each cell\n2 : Enter the 81 digit long code (with 0 for empty cells)\n3 : Use screenshot / picture\n")
+if inp == "1":
     for i in range(9):
         for j in range(9):
             print("\n\n\n")
-            displayGrid(grid, i, j)
-            grid[i][j] = input("Entrez le nombre ci dessus:")
+            displaySudoku(sudoku, i, j)
+            inp = "10"
+            while True:
+                inp = input("Enter the number shown above with # : ")
+                if inp in empty:
+                    sudoku[i][j] = 0
+                    break
+                if inp in numbers:
+                    sudoku[i][j] = int(inp)
+                    break
+                print("Invalid input")
+elif inp == "2":
+    inp = input("Enter the numbers starting from the top left and moving to the bottom right, row by row, filling in 0 for any empty cells: ")
+    assert (len(inp) == 81)
+    sd = [int(i) for i in inp]
+    sudoku = array(sd).reshape((9, 9))
+else:
+    print("Not codded yet !")
+    exit()
+
+#Initialise matrices for each number
+matrices = []
+for i in range(9):
+    matrices.append(zeros((9, 9)))
 
 
-main()
+
+#Strategies-------------------------------------------------------------------------------------------------------------
+
+
+
+#Main loop--------------------------------------------------------------------------------------------------------------
+act = True
+while act:
+    act = False
+
+
+
+
+    print("Rempli à", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%")
