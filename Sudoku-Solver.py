@@ -3,7 +3,7 @@ from numpy import *
 #Easy : 400870020080000400006300801700100080612098734000060019193427500807010302020003000
 
 #Useful functions-------------------------------------------------------------------------------------------------------
-def displaySudoku(sk, l, c):
+def displaySudoku(sk, l = 10, c = 10):
     for i in range(9):
         if i%3 == 0:
             print("-------------------------")
@@ -65,7 +65,7 @@ while isAnsWrong:
                         sudoku[i][j] = int(inp)
                         break
                     print("Invalid input")
-        displaySudoku(sudoku, 10, 10)
+        displaySudoku(sudoku)
         if input("Is this Sudoku correct ? (y/n)").lower() == "y":
             isAnsWrong = False
 
@@ -92,12 +92,13 @@ while isAnsWrong:
                     break
         sd = [int(i) for i in inp]
         sudoku = array(sd).reshape((9, 9))
-        displaySudoku(sudoku, 10, 10)
+        displaySudoku(sudoku)
         if input("Is this Sudoku correct ? (y/n)").lower() == "y":
             isAnsWrong = False
     else:
         print("Not codded yet !")
         exit()
+print("\n\n\n\n\n")
 
 # Initialise matrices for each number
 matrices = []
@@ -107,17 +108,46 @@ for i in range(9):
 
 
 #Strategies-------------------------------------------------------------------------------------------------------------
+def full_house():
+    #https://www.sudoku.academy/learn/full-house-strategy/
+    action = False
+    for l in sudoku:
+        if count_nonzero(l == 0) == 1:
+            action = True
+            missing = list(set(range(1,10))-set(l))[0]
+            l[where(l == 0)[0][0]] = missing
 
+    for r in range(9):
+        if count_nonzero(sudoku[:,r] == 0) == 1:
+            action = True
+            row = sudoku[:,r]
+            missing = list(set(range(1,10))-set(row))[0]
+            sudoku[where(row == 0)[0][0]][r] = missing
+
+    for s1 in range(0,9,3):
+        for s2 in range(0,9,3):
+            square = sudoku[s1:s1+3, s2:s2+3]
+            if count_nonzero(square == 0) == 1:
+                action = True
+                missing = list(set(range(1,10))-set(square.flatten()))[0]
+                l,r = argwhere(square == 0)[0]
+                sudoku[s1+l][s2+r] = missing
+    return action
 
 
 #Main loop--------------------------------------------------------------------------------------------------------------
-print("Initially filled to", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%")
+print("Initially filled to", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%\n\n")
 
 act = True
 while act:
     act = False
     update_matrices()
-
-
-
-    print("Filled to", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%")
+    if full_house():
+        act = True
+        print("Full house : ")
+    else:
+        pass
+    if act:
+        displaySudoku(sudoku)
+        print("Filled to", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%")
+        print("\n")
