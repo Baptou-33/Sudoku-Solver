@@ -21,6 +21,21 @@ def displaySudoku(sk, l, c):
         print(lgn)
     print("-------------------------")
 
+def update_matrices():
+	#https://www.sudoku.academy/learn/the-rules-of-sudoku/
+	for l in range(9):
+		for r in range(9):
+			if sudoku[l][r] != 0:
+				for m in range(9):
+					if sudoku[l][r] == m+1:
+						matrices[m][l] = 1
+						matrices[m][:,r] = 1
+						s1 = (l//3)*3
+						s2 = (r//3)*3
+						matrices[m][s1:s1+3, s2:s2+3] = 1
+					else:
+						matrices[m][l][r] = 1
+
 
 
 #Initialisation---------------------------------------------------------------------------------------------------------
