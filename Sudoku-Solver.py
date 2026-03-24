@@ -1,5 +1,7 @@
 from numpy import *
 
+#Easy : 400870020080000400006300801700100080612098734000060019193427500807010302020003000
+
 #Useful functions-------------------------------------------------------------------------------------------------------
 def displaySudoku(sk, l, c):
     for i in range(9):
@@ -22,19 +24,19 @@ def displaySudoku(sk, l, c):
     print("-------------------------")
 
 def update_matrices():
-	#https://www.sudoku.academy/learn/the-rules-of-sudoku/
-	for l in range(9):
-		for r in range(9):
-			if sudoku[l][r] != 0:
-				for m in range(9):
-					if sudoku[l][r] == m+1:
-						matrices[m][l] = 1
-						matrices[m][:,r] = 1
-						s1 = (l//3)*3
-						s2 = (r//3)*3
-						matrices[m][s1:s1+3, s2:s2+3] = 1
-					else:
-						matrices[m][l][r] = 1
+    #https://www.sudoku.academy/learn/the-rules-of-sudoku/
+    for l in range(9):
+        for r in range(9):
+            if sudoku[l][r] != 0:
+                for m in range(9):
+                    if sudoku[l][r] == m+1:
+                        matrices[m][l] = 1
+                        matrices[m][:,r] = 1
+                        s1 = (l//3)*3
+                        s2 = (r//3)*3
+                        matrices[m][s1:s1+3, s2:s2+3] = 1
+                    else:
+                        matrices[m][l][r] = 1
 
 
 
@@ -45,32 +47,52 @@ sudoku = zeros((9, 9), dtype=int)
 #Input sudoku
 empty = ["", " ", "0", "."]
 numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-inp = input("1 : Manually enter each cell\n2 : Enter the 81 digit long code (with 0 for empty cells)\n3 : Use screenshot / picture\n")
-if inp == "1":
-    for i in range(9):
-        for j in range(9):
-            print("\n\n\n")
-            displaySudoku(sudoku, i, j)
-            inp = "10"
-            while True:
-                inp = input("Enter the number shown above with # : ")
-                if inp in empty:
-                    sudoku[i][j] = 0
-                    break
-                if inp in numbers:
-                    sudoku[i][j] = int(inp)
-                    break
-                print("Invalid input")
-elif inp == "2":
-    inp = input("Enter the numbers starting from the top left and moving to the bottom right, row by row, filling in 0 for any empty cells: ")
-    assert (len(inp) == 81)
-    sd = [int(i) for i in inp]
-    sudoku = array(sd).reshape((9, 9))
-else:
-    print("Not codded yet !")
-    exit()
+mod = input("1 : Manually enter each cell\n2 : Enter the 81 digit long code (with 0 for empty cells)\n3 : Use screenshot / picture\n")
+isAnsWrong = True
+while isAnsWrong:
+    if mod == "1":
+        for i in range(9):
+            for j in range(9):
+                print("\n\n\n")
+                displaySudoku(sudoku, i, j)
+                inp = "10"
+                while True:
+                    inp = input("Enter the number shown above with # : ")
+                    if inp in empty:
+                        sudoku[i][j] = 0
+                        break
+                    if inp in numbers:
+                        sudoku[i][j] = int(inp)
+                        break
+                    print("Invalid input")
+        displaySudoku(sudoku, 10, 10)
+        if input("Is this Sudoku correct ? (y/n)").lower() == "y":
+            isAnsWrong = False
 
-#Initialise matrices for each number
+    elif mod == "2":
+        while True:
+            inp = input("Enter the numbers starting from the top left and moving to the bottom right, row by row, filling in 0 for any empty cells: ")
+            if len(inp) != 81:
+                print(f"Invalid input, should be 81 digit but only {len(inp)} were given.")
+            else:
+                tmp = True
+                for i in inp:
+                    if (i not in numbers) and i not in empty:
+                        tmp = False
+                        print(f"Invalid input, only digits allowed, '{i}' is not")
+
+                if tmp:
+                    break
+        sd = [int(i) for i in inp]
+        sudoku = array(sd).reshape((9, 9))
+        displaySudoku(sudoku, 10, 10)
+        if input("Is this Sudoku correct ? (y/n)").lower() == "y":
+            isAnsWrong = False
+    else:
+        print("Not codded yet !")
+        exit()
+
+# Initialise matrices for each number
 matrices = []
 for i in range(9):
     matrices.append(zeros((9, 9)))
@@ -85,7 +107,7 @@ for i in range(9):
 act = True
 while act:
     act = False
-
+    update_matrices()
 
 
 
