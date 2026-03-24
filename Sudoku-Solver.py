@@ -76,11 +76,18 @@ while isAnsWrong:
                 print(f"Invalid input, should be 81 digit but only {len(inp)} were given.")
             else:
                 tmp = True
+                inp2 = ""
                 for i in inp:
-                    if (i not in numbers) and i not in empty:
-                        tmp = False
-                        print(f"Invalid input, only digits allowed, '{i}' is not")
-
+                    if i in empty:
+                        inp2 += "0"
+                    else:
+                        if i in numbers:
+                            inp2 += i
+                        else:
+                            tmp = False
+                            print(f"Invalid input, only digits allowed, '{i}' is not")
+                            break
+                inp = inp2
                 if tmp:
                     break
         sd = [int(i) for i in inp]
@@ -104,6 +111,8 @@ for i in range(9):
 
 
 #Main loop--------------------------------------------------------------------------------------------------------------
+print("Initially filled to", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%")
+
 act = True
 while act:
     act = False
@@ -111,4 +120,4 @@ while act:
 
 
 
-    print("Rempli à", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%")
+    print("Filled to", round((81 - count_nonzero(sudoku == 0)) * 100 / 81), "%")
